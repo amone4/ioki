@@ -54,7 +54,7 @@ function postVars(&$post,$arr,&$err=null) {
 
 /**
  * function to check if a phone number is valid
- * @param   $phone  int phone number to be checked
+ * @param   int		$phone	phone number to be checked
  * @return  boolean returns if the phone number is valid
  */
 function validatePhone($phone) {
@@ -63,7 +63,7 @@ function validatePhone($phone) {
 
 /**
  * function to check if an email ID is valid
- * @param   $email  string  email ID to be checked
+ * @param   string  $email  email ID to be checked
  * @return  boolean returns if the email ID is valid
  */
 function validateEmail($email) {
@@ -72,9 +72,27 @@ function validateEmail($email) {
 
 /**
  * function to check if a username is valid
- * @param   $username  string  username to be checked
+ * @param   string  $username  username to be checked
  * @return  boolean returns if the username is valid
  */
 function validateUsername($username) {
-	return preg_match('%[A-z0-9\_\-\.\@]+%', $username);
+	return preg_match('%^[A-z0-9\_\-\.\@]+$%', $username);
+}
+
+/**
+ * function to check if the password is valid
+ * @param  string $password password to be validated
+ * @return boolean           returns if the password is valid
+ */
+function validatePassword($password) {return true;
+	return preg_match('%^[A-z0-9\@\%\+\\\/\'\!\#\$\^\?\:\(\)\{\}\[\]\~\-\_\.]$%', $password);
+}
+
+/**
+ * function to check if the name is valid
+ * @param  string $name name to be validated
+ * @return boolean           returns if the name is valid
+ */
+function validateName($name) {
+	return preg_match('%^[A-z\s]+$%', $name);
 }

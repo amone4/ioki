@@ -3,14 +3,14 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'talk');
+define('DB_NAME', 'ioki');
 
 // app root
 define('APPROOT', dirname(dirname(__FILE__)));
 // URL root
-define('URLROOT', 'http://localhost/talk_it_out');
+define('URLROOT', 'http://localhost/ioki');
 // site name
-define('SITENAME', 'Talk it Out!');
+define('SITENAME', 'IoKi');
 
 // password to be used for alphaID function
 define('PASS', 'rootByDefault');

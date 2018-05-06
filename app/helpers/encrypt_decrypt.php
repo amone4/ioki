@@ -64,7 +64,17 @@ function alphaID($in, $to_num = false, $pad_up = false, $pass_key = null) {
  * @return mixed    result of encryption
  */
 function encryptAlpha($string, $pad = false) {
-	return alphaID($string, false, $pad, PASS);
+	if ($pad === false || $pad < 1) return alphaID($string, false, false, PASS);
+	elseif ($pad % 2 === 1) return alphaID($string, false, $pad, PASS);
+	else {
+		$lower = '1';
+		$upper = '9';
+		for ($i = 1; $i < $pad/2; $i++) {
+			$lower .= '0';
+			$upper .= '9';
+		}
+		return alphaID(rand(intval($lower), intval($upper)) . $string . rand(intval($lower), intval($upper)), false, false, PASS);
+	}
 }
 
 /**
@@ -75,5 +85,29 @@ function encryptAlpha($string, $pad = false) {
  * @return mixed    result of decryption
  */
 function decryptAlpha($string, $pad = false) {
-	return alphaID($string, true, $pad, PASS);
+	if ($pad === false || $pad < 1) return alphaID($string, true, false, PASS);
+	elseif ($pad % 2 === 1) return alphaID($string, true, $pad, PASS);
+	else return substr(substr(number_format(alphaID($string, true, false, PASS), 0, '', ''), ($pad / 2)), 0, -($pad / 2));
+}
+
+/**
+ * function to encrypt input using PHP blowfish algorithm
+ * @param  string $input string to be encrypted
+ * @param  string $key   key used in encryption
+ * @return string        string after encryption
+ */
+function encryptBlowfish($input, $key) {
+	$output = $input;
+	return $output;
+}
+
+/**
+ * function to decrypt input using PHP blowfish algorithm
+ * @param  string $input string to be decrypted
+ * @param  string $key   key used in decryption
+ * @return string        string after decryption
+ */
+function decryptBlowfish($input, $key) {
+	$output = $input;
+	return $output;
 }

@@ -31,18 +31,14 @@ class Users extends Controller {
 
 						// storing the login session
 						$_SESSION['user'] = $id;
+						// store and encrypt the password in session
+						// redirect
 						redirect('');
 
 					// error messages
-					} else {
-						enqueueErrorMessage('Invalid credentials');
-					}
-				} else {
-					enqueueErrorMessage('Invalid username');
-				}
-			} else {
-				enqueueErrorMessage('Please enter valid details in all form fields');
-			}
+					} else enqueueErrorMessage('Invalid credentials');
+				} else enqueueErrorMessage('Invalid username');
+			} else enqueueErrorMessage('Please enter valid details in all form fields');
 		}
 
 		// loading the login view
@@ -106,36 +102,16 @@ class Users extends Controller {
 													redirect('users');
 
 												// error messages
-												} else {
-													enqueueErrorMessage('Some error occurred while sending you the confirmation email');
-												}
-											} else {
-												enqueueErrorMessage('Some error occurred while registering you');
-											}
-										} else {
-											enqueueErrorMessage('Username already registered');
-										}
-									} else {
-										enqueueErrorMessage('Phone number already registered');
-									}
-								} else {
-									enqueueErrorMessage('Email already registered');
-								}
-							} else {
-								enqueueErrorMessage('Passwords don\'t match');
-							}
-						} else {
-							enqueueErrorMessage('Invalid username');
-						}
-					} else {
-						enqueueErrorMessage('Invalid phone number');
-					}
-				} else {
-					enqueueErrorMessage('Invalid email ID');
-				}
-			} else {
-				enqueueErrorMessage('Please enter valid details in all form fields');
-			}
+												} else enqueueErrorMessage('Some error occurred while sending you the confirmation email');
+											} else enqueueErrorMessage('Some error occurred while registering you');
+										} else enqueueErrorMessage('Username already registered');
+									} else enqueueErrorMessage('Phone number already registered');
+								} else enqueueErrorMessage('Email already registered');
+							} else enqueueErrorMessage('Passwords don\'t match');
+						} else enqueueErrorMessage('Invalid username');
+					} else enqueueErrorMessage('Invalid phone number');
+				} else enqueueErrorMessage('Invalid email ID');
+			} else enqueueErrorMessage('Please enter valid details in all form fields');
 		}
 
 		// loading the registration view
@@ -143,10 +119,9 @@ class Users extends Controller {
 	}
 
 	public function logout() {
-		if (isset($_SESSION['user'])) {
-			unset($_SESSION['user']);
-			enqueueSuccessMessage('You were successfully logged out');
-		}
+		if (isset($_SESSION['user'])) unset($_SESSION['user']);
+		if (isset($_SESSION['pass'])) unset($_SESSION['pass']);
+		enqueueSuccessMessage('You were successfully logged out');
 		redirect('users');
 	}
 
@@ -174,15 +149,9 @@ class Users extends Controller {
 					redirect('users');
 
 				// error messages
-				} else {
-					generateErrorPage('Some error occurred while confirming email. Try again');
-				}
-			} else {
-				generateErrorPage('Invalid URL');
-			}
-		} else {
-			generateErrorPage('Invalid URL');
-		}
+				} else generateErrorPage('Some error occurred while confirming email. Try again');
+			} else generateErrorPage();
+		} else generateErrorPage();
 	}
 
 	public function change() {
@@ -218,18 +187,10 @@ class Users extends Controller {
 							redirect('users');
 
 						// error messages
-						} else {
-							enqueueErrorMessage('Some error occurred while changing password. Try again');
-						}
-					} else {
-						enqueueErrorMessage('The old password is incorrect');
-					}
-				} else {
-					enqueueErrorMessage('The entered passwords don\'t match');
-				}
-			} else {
-				enqueueErrorMessage('Please enter valid details in all form fields');
-			}
+						} else enqueueErrorMessage('Some error occurred while changing password. Try again');
+					} else enqueueErrorMessage('The old password is incorrect');
+				} else enqueueErrorMessage('The entered passwords don\'t match');
+			} else enqueueErrorMessage('Please enter valid details in all form fields');
 		}
 
 		// loading the view to change password
@@ -280,21 +241,11 @@ class Users extends Controller {
 								$this->data['sent'] = true;
 
 							// error messages
-							} else {
-								enqueueErrorMessage('Some error occurred while sending you the code');
-							}
-						} else {
-							enqueueErrorMessage('Some error occurred while processing your reset code');
-						}
-					} else {
-						enqueueErrorMessage('The email is not registered');
-					}
-				} else {
-					enqueueErrorMessage('Invalid email ID');
-				}
-			} else {
-				enqueueErrorMessage('Please enter valid details in all form fields');
-			}
+							} else enqueueErrorMessage('Some error occurred while sending you the code');
+						} else enqueueErrorMessage('Some error occurred while processing your reset code');
+					} else enqueueErrorMessage('The email is not registered');
+				} else enqueueErrorMessage('Invalid email ID');
+			} else enqueueErrorMessage('Please enter valid details in all form fields');
 		}
 
 		// loading the view
@@ -344,26 +295,17 @@ class Users extends Controller {
 								redirect('users');
 
 							// error messages
-							} else {
-								enqueueErrorMessage('Some error occurred while changing password. Try again');
-							}
-						} else {
-							enqueueErrorMessage('The entered passwords don\'t match');
-						}
-					} else {
-						enqueueErrorMessage('Please enter valid details in all form fields');
-					}
+							} else enqueueErrorMessage('Some error occurred while changing password. Try again');
+						} else enqueueErrorMessage('The entered passwords don\'t match');
+					} else enqueueErrorMessage('Please enter valid details in all form fields');
 				}
 
 				// loading the view to reset password
 				$this->view('users/reset_password', $this->data);
 
-			} else {
-				generateErrorPage('Invalid URL');
-			}
-		} else {
-			generateErrorPage('Invalid URL');
-		}
+			// error messages
+			} else generateErrorPage();
+		} else generateErrorPage();
 	}
 
 	public function createOTP() {
@@ -389,12 +331,8 @@ class Users extends Controller {
 				redirect('users/verifyOTP/' . encryptAlpha($p['phone']));
 
 			// error messages
-			} else {
-				generateErrorPage('Some error occurred while sending you the OTP');
-			}
-		} else {
-			generateErrorPage('Some error occurred while communicating with the database');
-		}
+			} else generateErrorPage('Some error occurred while sending you the OTP');
+		} else generateErrorPage('Some error occurred while communicating with the database');
 	}
 
 	public function verifyOTP() {
@@ -422,15 +360,9 @@ class Users extends Controller {
 						redirect('');
 
 					// error messages
-					} else {
-						enqueueErrorMessage('Wrong OTP');
-					}
-				} else {
-					enqueueErrorMessage('OTP has expired');
-				}
-			} else {
-				enqueueErrorMessage('Please enter valid details in all form fields');
-			}
+					} else enqueueErrorMessage('Wrong OTP');
+				} else enqueueErrorMessage('OTP has expired');
+			} else enqueueErrorMessage('Please enter valid details in all form fields');
 		}
 
 		// loading the view

@@ -1,0 +1,33 @@
+tables
+	user
+		id
+		name
+		username
+		email
+		phone
+		password
+		confirm_email
+		confirm_phone
+		code
+		otp
+		code_sent_on
+		otp_sent_on
+	credentials
+		id
+		user
+		link
+		type (= true for email)
+		username
+		password
+	shares
+		id
+		credential
+		to
+		shared_on (= now())
+		shared_till
+		approved
+		from
+		link
+		type (= true for email)
+		username
+		password

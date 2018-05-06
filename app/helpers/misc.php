@@ -1,11 +1,20 @@
 <?php
+
 /**
  * method redirects user to a location within the website
  * @param $location string
  */
-function redirect($location) {
-	header('Location: '.URLROOT.'/'.$location);
-	exit();
+function redirect($location = null) {
+	header('Location: ' . URLROOT . '/' . $location);
+	die();
+}
+
+/**
+ * checks if a form has been submitted via POST
+ * @return boolean
+ */
+function postSubmit() {
+	return ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']));
 }
 
 /**
@@ -13,9 +22,8 @@ function redirect($location) {
  * @return bool
  */
 function validateLogin() {
-	if (isset($_SESSION['user']) && !empty($_SESSION['user']) && ctype_digit($_SESSION['user'])) {
-		return true;
-	} else {
+	if (isset($_SESSION['user']) && !empty($_SESSION['user'])) return true;
+	else {
 		unset($_SESSION['user']);
 		return false;
 	}
@@ -25,7 +33,7 @@ function validateLogin() {
  * generates an error page
  * @param $message string message to be displayed
  */
-function generateErrorPage($message) {
+function generateErrorPage($message = 'Invalid URL') {
 	require_once APPROOT . '/controllers/Pages.php';
 	$controller = new Pages();
 	$controller->error($message);
