@@ -3,7 +3,7 @@
 class User_new extends Model {
 
 	public function __construct() {
-		$this->tableName = 'Users_new';
+		$this->tableName = 'users_new';
 		parent::__construct();
 	}
 

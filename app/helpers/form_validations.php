@@ -52,47 +52,31 @@ function postVars(&$post,$arr,&$err=null) {
 	return true;
 }
 
-/**
- * function to check if a phone number is valid
- * @param   int		$phone	phone number to be checked
- * @return  boolean returns if the phone number is valid
- */
 function validatePhone($phone) {
 	return preg_match('%^[1-9]{1}[0-9]{9}$%', $phone);
 }
 
-/**
- * function to check if an email ID is valid
- * @param   string  $email  email ID to be checked
- * @return  boolean returns if the email ID is valid
- */
 function validateEmail($email) {
 	return preg_match('%^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$%', $email);
 }
 
-/**
- * function to check if a username is valid
- * @param   string  $username  username to be checked
- * @return  boolean returns if the username is valid
- */
 function validateUsername($username) {
 	return preg_match('%^[A-z0-9\_\-\.\@]+$%', $username);
 }
 
-/**
- * function to check if the password is valid
- * @param  string $password password to be validated
- * @return boolean           returns if the password is valid
- */
 function validatePassword($password) {return true;
 	return preg_match('%^[A-z0-9\@\%\+\\\/\'\!\#\$\^\?\:\(\)\{\}\[\]\~\-\_\.]$%', $password);
 }
 
-/**
- * function to check if the name is valid
- * @param  string $name name to be validated
- * @return boolean           returns if the name is valid
- */
 function validateName($name) {
 	return preg_match('%^[A-z\s]+$%', $name);
+}
+
+function validateDate($date) {
+	list($year, $month, $day) = explode('-', $date);
+	return checkdate($month, $day, $year);
+}
+
+function validateTime($time) {
+	return preg_match('%^(?:2[0-3]|[01][0-9]):[0-5][0-9]$%', $time);
 }

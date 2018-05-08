@@ -373,15 +373,21 @@ class Users_new extends Controller {
 						// checking if the old password is correct
 						if (($old = $this->user->select(decryptAlpha($_SESSION['user'], 6))->password) && password_verify($p['oldPassword'], $old)) {
 
-							// changing the password
-							$p['newPassword'] = password_hash($p['newPassword'], PASSWORD_DEFAULT);
-							if ($this->user->update(decryptAlpha($_SESSION['user'], 6), ['password' => $p['newPassword']])) {
+							// changing encryption of all credentials
+							require_once APPROOT . '/controllers/Credentials_new.php';
+							$credential = new Crendentials_new();
+							if ($credential->changeEncryption(decryptAlpha($_SESSION['user'], 6), $p['oldPassword'], $p['newPassword'])) {
 
-								enqueueSuccessMessage('Your password has been successfully changed. Login again to continue');
-								$this->logout();
+								// changing the password
+								$p['newPassword'] = password_hash($p['newPassword'], PASSWORD_DEFAULT);
+								if ($this->user->update(decryptAlpha($_SESSION['user'], 6), ['password' => $p['newPassword']])) {
 
-							// error messages
-							} else enqueueErrorMessage('Some error occurred while changing your password');
+									enqueueSuccessMessage('Your password has been successfully changed. Login again to continue');
+									$this->logout();
+
+								// error messages
+								} else enqueueErrorMessage('Some error occurred while changing your password');
+							} else enqueueErrorMessage('Some error occurred while changing encryption of your credentials');
 						} else enqueueErrorMessage('Old password is incorrect');
 					} else enqueueErrorMessage('Passwords don\'t match');
 				} else enqueueErrorMessage('Invalid password');
@@ -389,5 +395,41 @@ class Users_new extends Controller {
 		}
 
 		$this->view('users_new/password_change');
+	}
+
+	private function changeCredentialEncryption($user, $oldKey, $newKey) {
+		// getting the models
+		$credential = $this->model('Credential_new');
+		$share = $this->model('Shared');
+
+		// getting the credentials
+		$credentials = $credential->selectWhere(['user' => $user]);
+		if ($credential->rowCount() === 1) {
+			$temp[0] = $credentials;
+			unset($credentials);
+			$credentials = $temp;
+		} elseif ($credentials->rowCount() === 0) $credentials = [];
+
+		// getting the shared credentials
+		$shared = $share->selectWhere(['user' => $user]);
+		if ($share->rowCount() === 1) {
+			$temp[0] = $shared;
+			unset($shared);
+			$shared = $temp;
+		} elseif ($shared->rowCount() === 0) $shared = [];
+
+		// encryption-decryption of credentials
+		foreach ($credentials as $value) {
+			$value->login = encryptBlowfish(decryptBlowfish($value->login, $oldKey), $newKey);
+			$value->password = encryptBlowfish(decryptBlowfish($value->password, $oldKey), $newKey);
+			$credential->update($value->id, ['login' => $value->login, 'password' => $value->password]);
+		}
+
+		// encryption-decryption of shared credentials
+		foreach ($shared as $value) {
+			$value->login = encryptBlowfish(decryptBlowfish($value->login, $oldKey), $newKey);
+			$value->password = encryptBlowfish(decryptBlowfish($value->password, $oldKey), $newKey);
+			$share->update($value->id, ['login' => $value->login, 'password' => $value->password]);
+		}
 	}
 }

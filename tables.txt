@@ -1,33 +1,34 @@
 tables
 	user
-		id
+		id (auto increment)
 		name
 		username
 		email
 		phone
 		password
-		confirm_email
-		confirm_phone
+		pin
+		confirm_email (boolean)
+		confirm_phone (boolean)
 		code
 		otp
 		code_sent_on
 		otp_sent_on
 	credentials
-		id
-		user
+		id (auto increment)
+		user (foreign key)
 		link
-		type (= true for email)
-		username
+		type (boolean) (=0 for username; =1 for email)
+		login
 		password
-	shares
-		id
-		credential
-		to
-		shared_on (= now())
+	shared
+		id (auto increment)
+		credential (foreign key)
+		shared_from (foreign key)
+		shared_to (foreign key)
+		shared_on
 		shared_till
-		approved
-		from
+		approved (boolean)
 		link
-		type (= true for email)
-		username
+		type (boolean) (=0 for username; =1 for email)
+		login
 		password

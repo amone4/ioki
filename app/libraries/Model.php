@@ -42,7 +42,7 @@ class Model {
 	}
 
 	// function to find a record using the primary key
-	public function select($id = null) {
+	public function select($id) {
 		$query = 'SELECT * FROM ' . $this->tableName;
 		if ($id != null) $query .= ' WHERE ' . $this->primaryKey . ' = :id';
 		$this->database->query($query);
@@ -98,7 +98,7 @@ class Model {
 	}
 
 	// function to update records using (key => value) pairs
-	public function udpateWhere($data, $clause = null) {
+	public function updateWhere($data, $clause = null) {
 		$query = 'UPDATE ' . $this->tableName . ' SET ';
 
 		foreach ($data as $key => $value) {
@@ -135,7 +135,7 @@ class Model {
 		if ($id != null) $query .= ' WHERE ' . $this->primaryKey . ' = :id';
 		$this->database->query($query);
 		if ($id != null) $this->database->bind('id', $id);
-		return $this->database->single();
+		return $this->database->execute();
 	}
 
 	// function to delete records using (key => value) pairs
