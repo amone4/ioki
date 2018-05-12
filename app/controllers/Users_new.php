@@ -339,7 +339,7 @@ class Users_new extends Controller {
 
 								// confirmation code reset and password reset
 								$p['password'] = password_hash($p['password'], PASSWORD_DEFAULT);
-								if ($this->user->update($id, ['code' => '0', 'password' => $p['password']])) {
+								if ($this->user->update($id, ['code' => '0', 'old_hash' => $row->password, 'flag' => 2, 'password' => $p['password']])) {
 
 									enqueueSuccessMessage('Your password has been successfully reset. Login to proceed');
 									redirect('users_new');
@@ -380,7 +380,7 @@ class Users_new extends Controller {
 
 								// changing the password
 								$p['newPassword'] = password_hash($p['newPassword'], PASSWORD_DEFAULT);
-								if ($this->user->update(decryptAlpha($_SESSION['user'], 6), ['password' => $p['newPassword']])) {
+								if ($this->user->update(decryptAlpha($_SESSION['user'], 6), ['password' => $p['newPassword'], 'old_hash' => $old])) {
 
 									enqueueSuccessMessage('Your password has been successfully changed. Login again to continue');
 									$this->logout();

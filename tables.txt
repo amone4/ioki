@@ -13,6 +13,8 @@ tables
 		otp
 		code_sent_on
 		otp_sent_on
+		old_hash
+		flag (=0 for normal, =1 for syncing, =2 for reset)
 	credentials
 		id (auto increment)
 		user (foreign key)
