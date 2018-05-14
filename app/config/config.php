@@ -10,7 +10,7 @@ define('APPROOT', dirname(dirname(__FILE__)));
 // URL root
 define('URLROOT', 'http://localhost/ioki');
 // site name
-define('SITENAME', 'IoKi');
+define('SITENAME', 'IOki');
 
 // password to be used for alphaID function
 define('PASS', 'rootByDefault');
