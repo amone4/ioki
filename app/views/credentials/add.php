@@ -1,6 +1,6 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 
-	<form class="container" method="POST" action="">
+	<form class="container" method="POST" action="<?php echo URLROOT; ?>/credentials/add">
 		<?php dequeMessages(); ?>
 		<fieldset>
 			<label for="link">Link:</label><br>
@@ -19,7 +19,7 @@
 			<input type="radio" name="type" value="username" checked>Username<br>
 			<input type="radio" name="type" value="Email">Email
 		</fieldset><br>
-		<input type="submit" name="submit">
+		<input type="submit" name="submit" value="Submit">
 	</form>
 
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

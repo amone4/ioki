@@ -25,7 +25,7 @@ tables
 	shared
 		id (auto increment)
 		credential (foreign key)
-		shared_from (foreign key)
+		shared_by (foreign key)
 		shared_to (foreign key)
 		shared_on
 		shared_till

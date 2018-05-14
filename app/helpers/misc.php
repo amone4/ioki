@@ -38,3 +38,12 @@ function generateErrorPage($message = 'Invalid URL') {
 	$controller = new Pages();
 	$controller->error($message);
 }
+
+function writeMessage($message) {
+	if ($con = fopen(APPROOT . '/message.txt', 'w')) {
+		fwrite($con, $message);
+		fclose($con);
+		return true;
+	}
+	return false;
+}

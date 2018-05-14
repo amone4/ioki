@@ -18,7 +18,7 @@
 				<input type="submit" name="submit" value="Login" class="form-control btn btn-success"><br><br>
 				<div class="col-md-8 offset-md-2 text-center">
 					<a href="<?php echo URLROOT; ?>/users/register">Register</a> |
-					<a href="<?php echo URLROOT; ?>/users/forgot">Forgot password</a>
+					<a href="<?php echo URLROOT; ?>/users/password/forgot">Forgot password</a>
 				</div>
 			</form>
 

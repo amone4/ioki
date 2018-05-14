@@ -29,7 +29,7 @@
 				</div>
 				<div class="field">
 					<label for="confirm">Confirm Password</label>
-					<input required type="password" class="form-control" name="confirm" id="confirm"><br>
+					<input required type="password" class="form-control" name="confirmPassword" id="confirmPassword"><br>
 				</div>
 
 				<input type="submit" name="submit" id="submit" value="Register" class="form-control btn btn-success"><br><br>
