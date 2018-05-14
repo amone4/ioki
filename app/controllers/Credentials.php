@@ -294,7 +294,14 @@ class Credentials extends Controller {
 			if ($this->shared->rowCount() === 1) {
 
 				if ($result->shared_till > time()) {
-					if ($this->shared->update($id, ['approved' => 1])) {
+
+					// making the decrypting key
+					$key = password_hash($this->key, PASSWORD_DEFAULT);
+					// changing encryption after approval
+					$row->login = encryptBlowfish(decryptBlowfish($row->login, $key), $this->key);
+					$row->password = encryptBlowfish(decryptBlowfish($row->password, $key), $this->key);
+
+					if ($this->shared->update($id, ['approved' => 1, 'password' => $row->password, 'login' => $row->login])) {
 						enqueueSuccessMessage('Credential successfully accepted for sharing');
 					} else enqueueErrorMessage('Some error occurred while accepting this request');
 				} else {

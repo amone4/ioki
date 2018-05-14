@@ -97,8 +97,7 @@ function decryptAlpha($string, $pad = false) {
  * @return string        string after encryption
  */
 function encryptBlowfish($input, $key) {
-	$output = $input;
-	return $output;
+	return openssl_encrypt($input, 'bf-cbc', $key);
 }
 
 /**
@@ -108,6 +107,5 @@ function encryptBlowfish($input, $key) {
  * @return string        string after decryption
  */
 function decryptBlowfish($input, $key) {
-	$output = $input;
-	return $output;
+	return openssl_decrypt($input, 'bf-cbc', $key);
 }
