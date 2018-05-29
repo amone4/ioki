@@ -2,6 +2,9 @@
 
 <?php dequeMessages(); ?>
 
-<p>This is an MVC PHP framework.</p>
+<div class="container">
+	<h1><?php echo SITENAME; ?></h1>
+	<p>A single key for all your locks</p>
+</div>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
