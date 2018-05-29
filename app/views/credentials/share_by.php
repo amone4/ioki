@@ -6,7 +6,7 @@
 			<div class="row"><strong><?php echo $value->link; ?></strong></div>
 			<div class="row">
 				<div class="col-6">
-					<div class="row">ID: <?php echo $value->login; ?></div>
+					<div class="row">ID: <?php echo $data['decrypted'][$key]['login']; ?></div>
 					<div class="row">Password: <?php echo $value->password; ?></div>
 					<div class="row">Status: <?php echo ($value->approved == 1 ? '' : 'Not ') . 'Approved'; ?></div>
 				</div>

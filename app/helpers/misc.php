@@ -39,8 +39,19 @@ function generateErrorPage($message = 'Invalid URL') {
 	$controller->error($message);
 }
 
-function writeMessage($message) {
-	if ($con = fopen(APPROOT . '/message.txt', 'w')) {
+function toArray($input) {
+	if (!is_array($input)) {
+		if (empty($input)) return [];
+
+		$temp[0] = $input;
+		unset($input);
+		$input = $temp;
+	}
+	return $input;
+}
+
+function writeMessage($message, $file = 'message.txt') {
+	if ($con = fopen(APPROOT . '/' . $file, 'w')) {
 		fwrite($con, $message);
 		fclose($con);
 		return true;

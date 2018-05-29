@@ -1,0 +1,1 @@
+<p>Reset your password by clicking on the link below<br><a href="http://localhost/ioki/users/password/reset/Wzpl">Reset password</a></p>

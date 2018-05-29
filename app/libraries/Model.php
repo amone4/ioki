@@ -145,7 +145,7 @@ class Model {
 		if ($clause != null) {
 			$query .= ' WHERE ';
 			foreach ($clause as $key => $value) {
-				$query .= $key . ' = :' . $key . '2 AND ';
+				$query .= $key . ' = :' . $key . ' AND ';
 			}
 			$query = chop($query, ' AND ');
 		}

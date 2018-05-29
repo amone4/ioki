@@ -6,7 +6,7 @@
 			<div class="row"><strong><?php echo $value->link; ?></strong></div>
 			<div class="row">
 				<div class="col-6">
-					<div class="row"><?php echo $value->login; ?></div>
+					<div class="row"><?php echo $data['decrypted'][$key]['login']; ?></div>
 					<div class="row"><?php echo $value->password; ?></div>
 				</div>
 				<div class="col-6">

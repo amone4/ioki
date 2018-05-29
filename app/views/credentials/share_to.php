@@ -6,7 +6,7 @@
 			<div class="row"><strong><?php echo $value->link; ?></strong></div>
 			<div class="row">
 				<div class="col-6">
-					<div class="row">ID: <?php echo $value->login; ?></div>
+					<div class="row">ID: <?php echo $data['decrypted'][$key]['login']; ?></div>
 					<div class="row">Shared by: <?php echo $value->shared_by; ?></div>
 					<div class="row">Shared till: <?php echo $value->shared_till; ?></div>
 				</div>

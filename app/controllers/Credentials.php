@@ -23,24 +23,15 @@ class Credentials extends Controller {
 	// function to view all added credentials
 	public function index() {
 		$encrypted = $this->credential->selectWhere(['user' => $this->user]);
-		$decrypted = [];
-
-		if ($this->credential->rowCount() === 1) {
-			$temp[0] = $encrypted;
-			unset($encrypted);
-			$encrypted = $temp;
-			$decrypted[0]['login'] = decryptBlowfish($encrypted[0]->login, $this->key);
-			$decrypted[0]['password'] = decryptBlowfish($encrypted[0]->password, $this->key);
-
-		} elseif ($this->credential->rowCount() > 1) {
-			foreach ($encrypted as $key => $value) {
-				$decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
-				$decrypted[$key]['password'] = decryptBlowfish($value->password, $this->key);
-			}
-
-		} else {
-			$encrypted = [];
+		if ($this->credential->rowCount() === 0) {
 			enqueueInformation('No credentials found');
+		}
+		$encrypted = toArray($encrypted);
+
+		$decrypted = [];
+		foreach ($encrypted as $key => $value) {
+			$decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
+			$decrypted[$key]['password'] = decryptBlowfish($value->password, $this->key);
 		}
 
 		$this->view('credentials/view', ['encrypted' => $encrypted, 'decrypted' => $decrypted]);
@@ -86,21 +77,19 @@ class Credentials extends Controller {
 	// function to update a credential
 	public function update($id) {
 		if (ctype_digit($id)) {
-			$row = $this->credential->select($id);
-			if ($this->credential->rowCount() === 1) {
+			$credential = $this->credential->select($id);
+			if ($this->credential->rowCount() === 1 && $credential->user == $this->user) {
 
 				// checking if the form was submitted
 				if (postSubmit()) {
 					// checking if the form fields were filled
 					if (postVars($p, ['type', 'login', 'password'])) {
 						// sanitizing data
-						$p['password'] = filter_var($p['password'], FILTER_SANITIZE_STRING);
-						$p['login'] = filter_var($p['login'], FILTER_SANITIZE_STRING);
-						$p['type'] = filter_var($p['type'], FILTER_SANITIZE_STRING);
+						$p = filter_var_array($p, FILTER_SANITIZE_STRING);
 						// validating type of credential
 						if ($p['type'] === 'email' || $p['type'] === 'username') {
 							$p['type'] = (int) ($p['type'] === 'email');
-							$p['link'] = $this->credential->select($id)->link;
+							$p['link'] = $credential->link;
 							$p['user'] = $this->user;
 							// encrypting the credential
 							$p['login'] = encryptBlowfish($p['login'], $this->key);
@@ -111,7 +100,7 @@ class Credentials extends Controller {
 								// updating credential
 								unset($p['link']);
 								unset($p['user']);
-								if ($this->shared->deleteWhere(['shared_by' => $this->user]) && $this->credential->update($id, $p)) {
+								if ($this->shared->deleteWhere(['credential' => $id,'shared_by' => $this->user]) && $this->credential->update($id, $p)) {
 
 									enqueueSuccessMessage('Credential successfully updated');
 									redirect('credentials/update/' . $id);
@@ -123,7 +112,9 @@ class Credentials extends Controller {
 					} else enqueueErrorMessage('Enter valid details in all form fields');
 				}
 
-				$this->view('credentials/update', $this->credential->select($id));
+				$credential->login = decryptBlowfish($credential->login, $this->key);
+				$credential->password = decryptBlowfish($credential->password, $this->key);
+				$this->view('credentials/update', $credential);
 
 			} else generateErrorPage();
 		} else generateErrorPage();
@@ -132,8 +123,8 @@ class Credentials extends Controller {
 	// function to delete a credential
 	public function delete($id) {
 		if (ctype_digit($id)) {
-			$row = $this->credential->select($id);
-			if ($this->credential->rowCount() === 1) {
+			$credential = $this->credential->select($id);
+			if ($this->credential->rowCount() === 1 && $credential->user == $this->user) {
 
 				if ($this->shared->deleteWhere(['credential' => $id]) && $this->credential->delete($id)) enqueueSuccessMessage('Credential successfully deleted');
 				else enqueueErrorMessage('Some error occurred while deleting the credentials');
@@ -154,23 +145,26 @@ class Credentials extends Controller {
 
 	// function to view all credentials that have been shared by us
 	private function shareBy() {
+		// getting the credentials from shared table
 		$encrypted =  $this->shared->selectWhere(['shared_by' => $this->user]);
-		$decrypted = [];
-
-		if ($this->shared->rowCount() === 1) {
-			$temp[0] = $encrypted;
-			unset($encrypted);
-			$encrypted[0] = $temp[0];
-			$decrypted[0]['login'] = decryptBlowfish($encrypted[0]->login, $this->key);
-
-		} elseif ($this->shared->rowCount() > 1) {
-			foreach ($encrypted as $key => $value) {
-				$decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
-			}
-
-		} else {
-			$encrypted = $decrypted = [];
+		if ($this->shared->rowCount() === 0) {
 			enqueueInformation('No credentials have been shared to you');
+		}
+		$encrypted = toArray($encrypted);
+
+		// getting all credentials from credentials table
+		$credentials = $this->credential->selectWhere(['user' => $this->user]);
+		$credentials = toArray($credentials);
+
+		// decrypting the credentials
+		$decrypted = [];
+		foreach ($encrypted as $key => $value) {
+			foreach ($credentials as $credential) {
+				if ($value->credential == $credential->id) {
+					$decrypted[$key]['login'] = decryptBlowfish($credential->login, $this->key);
+					break;
+				}
+			}
 		}
 
 		$this->view('credentials/share_by', ['encrypted' => $encrypted, 'decrypted' => $decrypted]);
@@ -179,25 +173,14 @@ class Credentials extends Controller {
 	// function to view all credentials that have been shared to us
 	private function shareTo() {
 		$encrypted =  $this->shared->selectWhere(['shared_to' => $this->user]);
-		$decrypted = [];
-
-		$user = $this->model('User');
-		$user = $user->select($this->user);
-
-		if ($this->shared->rowCount() === 1) {
-			$temp[0] = $encrypted;
-			unset($encrypted);
-			$encrypted = $temp;
-			$decrypted[0]['login'] = decryptBlowfish($encrypted[0]->login, $user->password);
-
-		} elseif ($this->shared->rowCount() > 1) {
-			foreach ($encrypted as $key => $value) {
-				$decrypted[$key]['login'] = decryptBlowfish($value->login, $user->password);
-			}
-
-		} else {
-			$encrypted = $decrypted = [];
+		if ($this->shared->rowCount() === 0) {
 			enqueueInformation('No credentials have been shared to you');
+		}
+		$encrypted = toArray($encrypted);
+
+		$decrypted = [];
+		foreach ($encrypted as $key => $value) {
+			$decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
 		}
 
 		$this->view('credentials/share_to', ['encrypted' => $encrypted, 'decrypted' => $decrypted]);
@@ -235,7 +218,7 @@ class Credentials extends Controller {
 											$p['credential'] = $id;
 											$p['link'] = $credential->link;
 											$p['type'] = $credential->type;
-											$p['login'] = decryptBlowfish($credential->login, $this->key);
+											$p['login'] = encryptBlowfish(decryptBlowfish($credential->login, $this->key), $user->password);
 											$p['password'] = encryptBlowfish(decryptBlowfish($credential->password, $this->key), $user->password);
 											$p['shared_to'] = $user->id;
 											$p['shared_by'] = $this->user;
@@ -277,7 +260,7 @@ class Credentials extends Controller {
 	private function shareDelete($id) {
 		if (ctype_digit($id)) {
 			$row = $this->shared->select($id);
-			if ($this->shared->rowCount() === 1) {
+			if ($this->shared->rowCount() === 1 && $row->shared_by == $this->user) {
 
 				if ($this->shared->delete($id)) enqueueSuccessMessage('Credential is no longer shared with the user');
 				else enqueueErrorMessage('Some error occurred while taking back the credential');
@@ -291,12 +274,13 @@ class Credentials extends Controller {
 	private function shareApprove($id) {
 		if (ctype_digit($id)) {
 			$row = $this->shared->select($id);
-			if ($this->shared->rowCount() === 1) {
+			if ($this->shared->rowCount() === 1 && $row->shared_to == $this->user) {
 
-				if ($result->shared_till > time()) {
+				if ($row->shared_till > time()) {
 
 					// making the decrypting key
-					$key = password_hash($this->key, PASSWORD_DEFAULT);
+					$user = $this->model('User');
+					$key = $user->select($this->user)->password;
 					// changing encryption after approval
 					$row->login = encryptBlowfish(decryptBlowfish($row->login, $key), $this->key);
 					$row->password = encryptBlowfish(decryptBlowfish($row->password, $key), $this->key);
@@ -319,7 +303,7 @@ class Credentials extends Controller {
 	private function shareReject($id) {
 		if (ctype_digit($id)) {
 			$row = $this->shared->select($id);
-			if ($this->shared->rowCount() === 1) {
+			if ($this->shared->rowCount() === 1 && $row->shared_to == $this->user) {
 
 				if ($this->shared->delete($id)) enqueueSuccessMessage('Credential successfully rejected for sharing');
 				else enqueueErrorMessage('Some error occurred while rejecting this request');
