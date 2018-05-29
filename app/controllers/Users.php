@@ -331,14 +331,19 @@ class Users extends Controller {
 							// checking if the passwords match
 							if ($p['password'] === $p['confirmPassword']) {
 
-								// confirmation code reset and password reset. The flag is also set to `reset` stage
-								$p['password'] = password_hash($p['password'], PASSWORD_DEFAULT);
-								if ($this->user->update($id, ['code' => '0', 'old_hash' => $row->password, 'flag' => 10, 'password' => $p['password']])) {
+								// deleting all unapproved credentials which were shared to the user
+								$share = $this->model('Shared');
+								if ($share->deleteWhere(['shared_to' => $id, 'approved' => 0])) {
 
-									enqueueSuccessMessage('Your password has been successfully reset. Login to proceed');
-									redirect('users');
+									// confirmation code reset and password reset. The flag is also set to `reset` stage
+									$p['password'] = password_hash($p['password'], PASSWORD_DEFAULT);
+									if ($this->user->update($id, ['code' => '0', 'old_hash' => $row->password, 'flag' => 10, 'password' => $p['password']])) {
 
-								// error messages
+										enqueueSuccessMessage('Your password has been successfully reset. Login to proceed');
+										redirect('users');
+
+									// error messages
+									} else enqueueErrorMessage('Some error occurred while resetting your password. Try again');
 								} else enqueueErrorMessage('Some error occurred while resetting your password. Try again');
 							} else enqueueErrorMessage('Passwords don\'t match');
 						} else enqueueErrorMessage('Invalid password');
@@ -394,15 +399,15 @@ class Users extends Controller {
 	}
 
 	public function sync() {
-		if (isset($_GET['app'])) {
-			if (getVars($g, ['user', 'key', 'old'])) {
-
+		if ($p = $this->validateAppRequest()) {
+			if (isset($_POST['old']) && !empty($_POST['old'])) {
+				$p['old'] = $_POST['old'];
 				// getting the user details
-				$user = $this->user->select($g['user']);
-				// making the decrypting key
-				$decrypt = decryptBlowfish($g['old'], $user->old_hash);
+				$user = $this->user->select($p['user']);
+				// making the decryption key
+				$decrypt = decryptBlowfish($p['old'], $user->old_hash);
 				// making the encryption key
-				$encrypt = decryptBlowfish($g['key'], $user->password);
+				$encrypt = decryptBlowfish($p['key'], $user->password);
 				// setting the syncing flag
 				$this->user->update($user->id, ['flag' => 1]);
 				// changing encryption
@@ -445,5 +450,20 @@ class Users extends Controller {
 		}
 
 		return true;
+	}
+
+	private function validateAppRequest() {
+		if (postSubmit()) {
+			if (postVars($p, ['user', 'key'])) {
+				if (ctype_digit($p['user'])) {
+
+					$row = $this->user->select($p['user']);
+					if (password_verify(decryptBlowfish($p['key'], $row->password), $row->password)) {
+						return $p;
+
+					} else return false;
+				} else return false;
+			} else return false;
+		} else return false;
 	}
 }

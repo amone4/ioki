@@ -179,8 +179,11 @@ class Credentials extends Controller {
 		$encrypted = toArray($encrypted);
 
 		$decrypted = [];
+		$user = $this->model('User');
+		$password = $user->select($this->user)->password;
 		foreach ($encrypted as $key => $value) {
-			$decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
+			if ($value->approved == 0) $decrypted[$key]['login'] = decryptBlowfish($value->login, $password);
+			else $decrypted[$key]['login'] = decryptBlowfish($value->login, $this->key);
 		}
 
 		$this->view('credentials/share_to', ['encrypted' => $encrypted, 'decrypted' => $decrypted]);
