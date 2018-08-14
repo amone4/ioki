@@ -148,7 +148,7 @@ class Credentials extends Controller {
 		// getting the credentials from shared table
 		$encrypted =  $this->shared->selectWhere(['shared_by' => $this->user]);
 		if ($this->shared->rowCount() === 0) {
-			enqueueInformation('No credentials have been shared to you');
+			enqueueInformation('No credentials have been shared by you');
 		}
 		$encrypted = toArray($encrypted);
 
