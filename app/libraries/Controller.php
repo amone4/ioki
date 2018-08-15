@@ -18,8 +18,12 @@ abstract class Controller {
 
 	// load view
 	protected function view($view, $data = []){
+		if (isAppRequest()) {
+			$data['messages'] = messagesToJSON();
+			echo json_encode($data);
+			die();
 		// check for view file
-		if(file_exists('../app/views/' . $view . '.php')){
+		} elseif(file_exists('../app/views/' . $view . '.php')){
 			require_once '../app/views/' . $view . '.php';
 		// view does not exist
 		} else {

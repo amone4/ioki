@@ -10,6 +10,8 @@ class Core {
 	protected $params = [];
 
 	public function __construct() {
+		if (isAppRequest()) header('Content-type: application/json');
+
 		$url = $this->getUrl();
 
 		// look in controllers for first value

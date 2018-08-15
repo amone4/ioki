@@ -22,7 +22,7 @@ function postSubmit() {
  * @return bool
  */
 function validateLogin() {
-	if (isset($_SESSION['user']) && !empty($_SESSION['user'])) return true;
+	if (!isAppRequest() || (isset($_SESSION['user']) && !empty($_SESSION['user']))) return true;
 	else {
 		unset($_SESSION['user']);
 		return false;
@@ -34,6 +34,10 @@ function validateLogin() {
  * @param $message string message to be displayed
  */
 function generateErrorPage($message = 'Invalid URL') {
+	if (isAppRequest()) {
+		json_encode($message);
+		die();
+	}
 	require_once APPROOT . '/controllers/Pages.php';
 	$controller = new Pages();
 	$controller->error($message);
@@ -57,4 +61,8 @@ function writeMessage($message, $file = 'message.txt') {
 		return true;
 	}
 	return false;
+}
+
+function isAppRequest() {
+	return isset($_GET['appRequest']);
 }

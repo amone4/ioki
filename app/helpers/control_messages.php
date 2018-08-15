@@ -27,7 +27,6 @@ function dequeMessages() {
 		else if ($_SESSION['control_messages_type' . $key] === 1) $type = 'primary';
 		else $type = 'danger';
 
-
 		echo '
 			<div class="alert alert-' . $type . ' in" role="alert" id="alert_' . $type . $key . '">
 				<button type="button" class="close" onclick="document.getElementById(\'alert_' . $type . $key . '\').hidden = true;">
@@ -45,4 +44,16 @@ function dequeMessages() {
 		';
 	}
 	$_SESSION['control_messages_top'] = 0;
+}
+
+function messagesToJSON() {
+	$messages = [];
+	for ($key = 0; $key < $_SESSION['control_messages_top']; $key++) {
+		if ($_SESSION['control_messages_type' . $key] === 0) $messages[$key]['type'] = 'success';
+		else if ($_SESSION['control_messages_type' . $key] === 1) $messages[$key]['type'] = 'primary';
+		else $messages[$key]['type'] = 'danger';
+		$messages[$key]['message'] = $_SESSION['control_messages_text' . $key];
+	}
+	$_SESSION['control_messages_top'] = 0;
+	return $messages;
 }

@@ -32,9 +32,10 @@ class Users extends Controller {
 							if (password_verify($p['password'], $row->password)) {
 
 								// encrypting and storing the session
-								$_SESSION['user'] = encryptAlpha($row->id, 6);
-								$_SESSION['pass'] = encryptBlowfish($p['password'], $row->password);
-								writeMessage($_SESSION['pass']);
+								if (!isAppRequest()) {
+									$_SESSION['user'] = encryptAlpha($row->id, 6);
+									$_SESSION['pass'] = encryptBlowfish($p['password'], $row->password);
+								}
 								enqueueSuccessMessage('You have been successfully logged in');
 								redirect();
 
