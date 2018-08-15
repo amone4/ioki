@@ -5,8 +5,10 @@
  * @param $location string
  */
 function redirect($location = null) {
-	if (isAppRequest()) $location .= '?appRequest';
-	header('Location: ' . URLROOT . '/' . $location);
+	if (isAppRequest()) {
+		$data['messages'] = messagesToJSON();
+		echo json_encode($data);
+	} else header('Location: ' . URLROOT . '/' . $location);
 	die();
 }
 
