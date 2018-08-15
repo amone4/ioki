@@ -5,6 +5,7 @@
  * @param $location string
  */
 function redirect($location = null) {
+	if (isAppRequest()) $location .= '?appRequest';
 	header('Location: ' . URLROOT . '/' . $location);
 	die();
 }
