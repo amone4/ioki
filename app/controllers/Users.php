@@ -11,7 +11,7 @@ class Users extends Controller {
 	// function for login
 	public function index() {
 		// checking if the user is logged in
-		if (validateLogin()) {
+		if (!isAppRequest() && validateLogin()) {
 			enqueueInformation('You can\'t login, because you\'re logged in');
 			$this->logout();
 		}
@@ -53,7 +53,7 @@ class Users extends Controller {
 	// function for register
 	public function register() {
 		// checking if the user is logged in
-		if (validateLogin()) {
+		if (!isAppRequest() && validateLogin()) {
 			enqueueInformation('You can\'t register, because you\'re logged in');
 			$this->logout();
 		}
@@ -118,10 +118,12 @@ class Users extends Controller {
 
 	// function for logout
 	public function logout() {
-		if (validateLogin()) enqueueSuccessMessage('You have been successfully logged out');
-		if (isset($_SESSION['user'])) unset($_SESSION['user']);
-		if (isset($_SESSION['pass'])) unset($_SESSION['pass']);
-		redirect('users');
+		if (!isAppRequest()) {
+			if (validateLogin()) enqueueSuccessMessage('You have been successfully logged out');
+			if (isset($_SESSION['user'])) unset($_SESSION['user']);
+			if (isset($_SESSION['pass'])) unset($_SESSION['pass']);
+			redirect('users');
+		}
 	}
 
 	/** functions to handle confirmations **/
@@ -134,7 +136,7 @@ class Users extends Controller {
 	// function to confirm email
 	private function confirmEmail($code) {
 		// checking if the user is logged in
-		if (validateLogin()) {
+		if (!isAppRequest() && validateLogin()) {
 			enqueueInformation('You can\'t confirm your email, until you\'re logged in');
 			$this->logout();
 		}
@@ -161,7 +163,7 @@ class Users extends Controller {
 	// function to confirm phone number
 	private function confirmPhone() {
 		// checking if the user is logged in
-		if (!validateLogin()) $this->logout();
+		if (!isAppRequest() && !validateLogin()) $this->logout();
 
 		// checking if phone verification is needed
 		$user = $this->user->select(decryptAlpha($_SESSION['user'], 6));
@@ -206,7 +208,7 @@ class Users extends Controller {
 	// function to send OTP for confirming the phone number
 	private function sendOTP() {
 		// checking if the user is logged in
-		if (!validateLogin()) redirect();
+		if (!isAppRequest() && !validateLogin()) redirect();
 
 		// checking if phone verification is needed
 		$user = $this->user->select(decryptAlpha($_SESSION['user'], 6));
@@ -236,7 +238,7 @@ class Users extends Controller {
 	// function to send confirmation code for confirming the email
 	private function sendCode() {
 		// checking if the user is logged in
-		if (!validateLogin()) redirect();
+		if (!isAppRequest() && !validateLogin()) redirect();
 
 		$user = $this->user->select(decryptAlpha($_SESSION['user'], 6));
 
@@ -275,7 +277,7 @@ class Users extends Controller {
 	// function for forgot password
 	private function passwordForgot() {
 		// checking if the user is logged in
-		if (validateLogin()) redirect();
+		if (!isAppRequest() && validateLogin()) redirect();
 
 		// checking if the form was submitted
 		if (postSubmit()) {
@@ -312,7 +314,7 @@ class Users extends Controller {
 	// function to reset password
 	private function passwordReset($code) {
 		// checking if the user is logged in
-		if (validateLogin()) {
+		if (!isAppRequest() && validateLogin()) {
 			enqueueInformation('You can\'t reset your password, because you\'re logged in');
 			$this->logout();
 		}
@@ -360,7 +362,7 @@ class Users extends Controller {
 	// function to change password
 	private function passwordChange() {
 		// checking if the user is logged in
-		if (!validateLogin()) $this->logout();
+		if (!isAppRequest() && !validateLogin()) $this->logout();
 
 		// checking if the form has been submitted
 		if (postSubmit()) {

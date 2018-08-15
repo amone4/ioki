@@ -22,7 +22,7 @@ function postSubmit() {
  * @return bool
  */
 function validateLogin() {
-	if (!isAppRequest() || (isset($_SESSION['user']) && !empty($_SESSION['user']))) return true;
+	if (isset($_SESSION['user']) && !empty($_SESSION['user'])) return true;
 	else {
 		unset($_SESSION['user']);
 		return false;

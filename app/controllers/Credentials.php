@@ -9,7 +9,7 @@ class Credentials extends Controller {
 	// constructor function
 	public function __construct() {
 		// validating that the user is logged in
-		if (!validateLogin()) redirect();
+		if (!isAppRequest() && !validateLogin()) redirect();
 		// using the models
 		$this->credential = $this->model('Credential');
 		$this->shared = $this->model('Shared');
