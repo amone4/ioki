@@ -1,11 +1,7 @@
 <?php
-/**
- * PDO database class
- * connect to database
- * create prepared statements
- * bind values
- * return rows and results
- */
+
+defined('_INDEX_EXEC') or die('Restricted access');
+
 class Database {
 	private $host = DB_HOST;
 	private $user = DB_USER;
