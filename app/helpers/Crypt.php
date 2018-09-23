@@ -4,16 +4,16 @@ defined('_INDEX_EXEC') or die('Restricted access');
 
 class Crypt {
 
-	public static function encryptBlowfish($input, $key = ALPHA_PASS) {
+	public static function encryptBlowfish($input, $key = PASS) {
 		return @openssl_encrypt($input, 'bf-cbc', $key);
 	}
 
-	public static function decryptBlowfish($input, $key = ALPHA_PASS) {
+	public static function decryptBlowfish($input, $key = PASS) {
 		return @openssl_decrypt($input, 'bf-cbc', $key);
 	}
 
 	public static function encryptAlpha($string, $pad = false) {
-		if ($pad === false || $pad < 1) return self::alphaID($string, false, false, ALPHA_PASS);
+		if ($pad === false || $pad < 1) return self::alphaID($string, false, false, PASS);
 		else {
 			$lower = '1';
 			$upper = '9';
@@ -21,13 +21,13 @@ class Crypt {
 				$lower .= '0';
 				$upper .= '9';
 			}
-			return self::alphaID(rand(intval($lower), intval($upper)) . $string . rand(intval($lower), intval($upper)), false, false, ALPHA_PASS);
+			return self::alphaID(rand(intval($lower), intval($upper)) . $string . rand(intval($lower), intval($upper)), false, false, PASS);
 		}
 	}
 
 	public static function decryptAlpha($string, $pad = false) {
-		if ($pad === false || $pad < 1) return self::alphaID($string, true, false, ALPHA_PASS);
-		else return substr(substr(number_format(self::alphaID($string, true, false, ALPHA_PASS), 0, '', ''), ($pad / 2)), 0, -($pad / 2));
+		if ($pad === false || $pad < 1) return self::alphaID($string, true, false, PASS);
+		else return substr(substr(number_format(self::alphaID($string, true, false, PASS), 0, '', ''), ($pad / 2)), 0, -($pad / 2));
 	}
 
 	private static function alphaID($in, $to_num = false, $pad_up = false, $pass_key = null) {

@@ -31,7 +31,7 @@ class ShareAdd extends Credentials {
 									if ($user->rowCount() === 1) {
 										$user = $result;
 										// checking if the credential is already shared with this user
-										$this->shared->selectWhere(['credential' => $user->id, 'shared_to' => $p['username']]);
+										$this->shared->selectWhere(['credential' => $id, 'shared_to' => $user->id]);
 										if ($this->shared->rowCount() === 0) {
 
 											// setting the necessary variables

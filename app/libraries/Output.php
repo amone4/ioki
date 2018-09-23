@@ -112,8 +112,6 @@ class Output {
 				if (file_exists($componentViewsPath . 'header.php'))
 					require_once $componentViewsPath . 'header.php';
 				else require_once APPROOT . '/views/header.php';
-				if (file_exists($componentViewsPath . 'navbar.php'))
-					require_once $componentViewsPath . 'navbar.php';
 				echo '<div id="container">';
 				require_once $componentViewsPath . $output['view'][0] . '.php';
 				echo '</div>';

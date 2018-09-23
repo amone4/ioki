@@ -2,7 +2,7 @@
 
 <br><div class="container">
 	<a href="<?php echo URLROOT; ?>">Home</a> |
-	<?php if (!validateLogin()) : ?>
+	<?php if (!Misc::validateLogin()) : ?>
 		<a href="<?php echo URLROOT; ?>/users">Login</a> |
 		<a href="<?php echo URLROOT; ?>/users/register">Register</a>
 	<?php else : ?>

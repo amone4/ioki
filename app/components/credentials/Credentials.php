@@ -41,7 +41,7 @@ class Credentials extends Controller {
 	// controller function to handle requests related to sharing of a credential
 	public function share($request, $id = null) {
 		$method = 'share' . ucwords($request);
-		if ($id !== null) App::dispatchMethod($method, $id);
+		if ($id !== null) App::dispatchMethod($method, [$id]);
 		else App::dispatchMethod($method);
 	}
 }

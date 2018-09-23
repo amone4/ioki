@@ -52,6 +52,7 @@ class Users extends Controller {
 
 	// function to change encryption of all credentials
 	protected function changeCredentialEncryption($user, $oldKey, $newKey) {
+		// TODO: change encryption of unapproved credentials
 		// getting the models
 		$credential = $this->getModel('credentials/Credential');
 		$share = $this->getModel('credentials/Shared');

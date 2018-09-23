@@ -17,3 +17,5 @@
 </head>
 <body>
 	<script>const rootURL = '<?php echo URLROOT; ?>';</script>
+
+	<?php require_once APPROOT . '/views/navbar.php'; ?>

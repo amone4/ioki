@@ -171,19 +171,16 @@ abstract class Model {
 
 		if ($clause != null) {
 			$query .= ' WHERE ';
-			foreach ($clause as $key => $value) {
-				$query .= $key . ' = :' . $key . '2 AND ';
-			}
+			foreach ($clause as $key => $value)
+				$query .= $key . ' = :' . $key . ' AND ';
 			$query = chop($query, ' AND ');
 		}
 
 		$this->database->query($query);
 
-		if ($clause != null) {
-			foreach ($clause as $key => $value) {
+		if ($clause != null)
+			foreach ($clause as $key => $value)
 				$this->database->bind($key, $value);
-			}
-		}
 
 		return $this->database->execute();
 	}

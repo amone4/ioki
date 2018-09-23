@@ -61,7 +61,7 @@ class App {
 				}
 			}
 
-			// empty request
+		// empty request
 		} else $request['url'] = '';
 
 		// converting URL into array
@@ -102,7 +102,7 @@ class App {
 				if (!is_callable([$controller, $func])) Output::fatal();
 				else call_user_func_array([$controller, $func], $params);
 
-				// method within methods folder of that component
+			// method within methods folder of that component
 			} else {
 				$func = ucwords($func);
 				$filePath = APPROOT . '/components/' . App::$data['component'] . '/methods/' . $func . '.php';
@@ -111,14 +111,14 @@ class App {
 					$reflect = new ReflectionClass($func);
 					$reflect->newInstanceArgs($params);
 
-					// method not found
+				// method not found
 				} else Output::fatal('Method does not exist');
 			}
 
 			// rendering output after processing
 			Output::render();
 
-			// invalid parameters
+		// invalid parameters
 		} catch (ArgumentCountError $e) {
 			Output::fatal();
 		}
