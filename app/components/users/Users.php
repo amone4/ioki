@@ -25,9 +25,9 @@ class Users extends Controller {
 				// sanitizing data
 				$p = filter_var_array($p, FILTER_SANITIZE_STRING);
 				// validating username
-				if (Validations::validateUsername($p['username'])) {
+				if (Validations::username($p['username'])) {
 					// validating password
-					if (Validations::validatePassword($p['password'])) {
+					if (Validations::password($p['password'])) {
 						// checking if username exists
 						if (($row = $this->user->selectWhere(['username' => $p['username']])) && $this->user->rowCount() === 1) {
 							// verifying if the password is correct

@@ -22,9 +22,9 @@ class ShareAdd extends Credentials {
 						$p['shared_till_date'] = filter_var($p['shared_till_date'], FILTER_SANITIZE_STRING);
 						$p['shared_till_time'] = filter_var($p['shared_till_time'], FILTER_SANITIZE_STRING);
 						// validating data
-						if (Validations::validateDate($p['shared_till_date'])) {
-							if (Validations::validateTime($p['shared_till_time'])) {
-								if (Validations::validateUsername($p['username'])) {
+						if (Validations::date($p['shared_till_date'])) {
+							if (Validations::time($p['shared_till_time'])) {
+								if (Validations::username($p['username'])) {
 									// checking if the user exits
 									$user = $this->getModel('users/User');
 									$result = $user->selectWhere(['username' => $p['username']]);

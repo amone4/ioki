@@ -16,7 +16,7 @@ class Validations {
 	}
 
 	public static function username($input) {
-		return preg_match('%^[A-z0-9\_\.]+$%', $input);
+		return preg_match('%^[A-z0-9\_\-\.\@]+$%', $input);
 	}
 
 	public static function email($input) {
@@ -37,5 +37,18 @@ class Validations {
 
 	public static function address($input) {
 		return preg_match('%[A-z0-9\s\,\-\;]%', $input);
+	}
+
+	public static function time($input) {
+		return preg_match('%^(?:2[0-3]|[01][0-9]):[0-5][0-9]$%', $input);
+	}
+
+	public static function date($date) {
+		$date = explode('-', $date);
+		if (isset($date[0]) && !empty($date[0]) && ctype_digit($date[0]))
+			if (isset($date[1]) && !empty($date[1]) && ctype_digit($date[1]))
+				if (isset($date[2]) && !empty($date[2]) && ctype_digit($date[2]))
+					return checkdate($date[1], $date[2], $date[0]);
+		return false;
 	}
 }

@@ -21,15 +21,15 @@ class Register extends Users {
 				// sanitizing data
 				$p = filter_var_array($p, FILTER_SANITIZE_STRING);
 				// validating email
-				if (Validations::validateEmail($p['email'])) {
+				if (Validations::email($p['email'])) {
 					// validating username
-					if (Validations::validateUsername($p['username'])) {
+					if (Validations::username($p['username'])) {
 						// validating password
-						if (Validations::validatePassword($p['password']) && Validations::validatePassword($p['confirmPassword'])) {
+						if (Validations::password($p['password']) && Validations::password($p['confirmPassword'])) {
 							// validating phone number
-							if (Validations::validatePhone($p['phone'])) {
+							if (Validations::phone($p['phone'])) {
 								// validating name
-								if (Validations::validateName($p['name'])) {
+								if (Validations::name($p['name'])) {
 									// checking if the passwords match
 									if ($p['password'] === $p['confirmPassword']) {
 										$p['name'] = strtolower($p['name']);

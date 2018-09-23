@@ -26,7 +26,7 @@ class Password extends Users {
 				// sanitizing data
 				$p['email'] = filter_var($p['email'], FILTER_SANITIZE_EMAIL);
 				// checking if the email entered is valid
-				if (Validations::validateEmail($p['email'])) {
+				if (Validations::email($p['email'])) {
 					if (($row = $this->user->selectWhere(['email' => $p['email']])) && $this->user->rowCount() === 1) {
 
 						// generating confirmation code for email
@@ -70,7 +70,7 @@ class Password extends Users {
 					// checking if the form fields have been filled
 					if (Forms::post($p, ['password', 'confirmPassword'])) {
 						// validating passwords
-						if (Validations::validatePassword($p['password']) && Validations::validatePassword($p['confirmPassword'])) {
+						if (Validations::password($p['password']) && Validations::password($p['confirmPassword'])) {
 							// checking if the passwords match
 							if ($p['password'] === $p['confirmPassword']) {
 
@@ -109,7 +109,7 @@ class Password extends Users {
 			// checking if the form fields have been filled
 			if (Forms::post($p, ['oldPassword', 'newPassword', 'confirmPassword'])) {
 				// validating passwords
-				if (Validations::validatePassword($p['oldPassword']) && Validations::validatePassword($p['newPassword']) && Validations::validatePassword($p['confirmPassword'])) {
+				if (Validations::password($p['oldPassword']) && Validations::password($p['newPassword']) && Validations::password($p['confirmPassword'])) {
 					// checking if the passwords match
 					if ($p['newPassword'] === $p['confirmPassword']) {
 
