@@ -25,7 +25,7 @@ class Session {
 				unset($_SESSION[$key]);
 			}
 			Output::session($data);
-		} else
+		} else if (Session::$vars)
 			foreach (Session::$vars as $key)
 				if (isset($_SESSION[$key]))
 					unset($_SESSION[$key]);
