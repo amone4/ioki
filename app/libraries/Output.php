@@ -14,13 +14,15 @@ class Output {
 				'link' => ''
 			],
 			'view' => '',
-			'data' => []
+			'data' => [],
+			'session' => [],
 		];
 	}
 
 	public static function session($data) {
-		if (App::get('isAPIRequest'))
+		if (App::get('isAPIRequest')) {
 			Output::$output['session'] = $data;
+		}
 	}
 
 	// function to set view
@@ -61,9 +63,10 @@ class Output {
 
 	// function to terminate processing, and display a fatal error
 	public static function fatal($message = 'Invalid URL') {
-		if (App::get('isAPIRequest'))
-			Output::renderJSON(['fatal' => $message]);
-		else {
+		if (App::get('isAPIRequest')) {
+			Output::$output = ['fatal' => $message];
+			Output::renderJSON();
+		} else {
 			require_once APPROOT . '/views/message.php';
 			Session::destroy();
 			die();
@@ -84,36 +87,36 @@ class Output {
 	// function to start final rendering of output
 	public static function render() {
 		if (App::get('isAPIRequest'))
-			Output::renderJSON(Output::$output);
+			Output::renderJSON();
 		else
-			Output::renderHTML(Output::$output);
+			Output::renderHTML();
 	}
 
 	// function to render HTML output
-	private static function renderHTML($output) {
-		foreach ($output['messages'] as $message)
+	private static function renderHTML() {
+		foreach (Output::$output['messages'] as $message)
 			Messages::{$message['type']}($message['message']);
 
-		if ($output['redirect']['valid']) {
-			header('Location: ' . URLROOT . '/' . $output['redirect']['link']);
+		if (Output::$output['redirect']['valid']) {
+			header('Location: ' . URLROOT . '/' . Output::$output['redirect']['link']);
 			Session::destroy();
 			die();
 		}
 
-		if (!empty($output['view'])) {
-			$output['view'] = explode('/', $output['view']);
+		if (!empty(Output::$output['view'])) {
+			Output::$output['view'] = explode('/', Output::$output['view']);
 			$componentViewsPath = APPROOT . '/components/';
-			if (isset($output['view'][1])) {
-				$componentViewsPath .= $output['view'][0] . '/views/';
-				unset($output['view'][0]);
+			if (isset(Output::$output['view'][1])) {
+				$componentViewsPath .= Output::$output['view'][0] . '/views/';
+				unset(Output::$output['view'][0]);
 			} else $componentViewsPath .= App::get('component') . '/views/';
-			$data = $output['data'];
-			if (file_exists($componentViewsPath . $output['view'][0] .  '.php')) {
+			$data = Output::$output['data'];
+			if (file_exists($componentViewsPath . Output::$output['view'][0] .  '.php')) {
 				if (file_exists($componentViewsPath . 'header.php'))
 					require_once $componentViewsPath . 'header.php';
 				else require_once APPROOT . '/views/header.php';
 				echo '<div id="container">';
-				require_once $componentViewsPath . $output['view'][0] . '.php';
+				require_once $componentViewsPath . Output::$output['view'][0] . '.php';
 				echo '</div>';
 				if (file_exists($componentViewsPath . 'footer.php'))
 					require_once $componentViewsPath . 'footer.php';
@@ -125,7 +128,7 @@ class Output {
 	}
 
 	// function to render JSON output
-	private static function renderJSON($output) {
+	private static function renderJSON() {
 		header('Content-type: application/json');
 		if (!empty($output['view'])) {
 			$view = explode('/', $output['view']);
@@ -134,8 +137,10 @@ class Output {
 			else
 				$output['view'] = App::get('component') . '/' . $view[0];
 		}
-		echo json_encode($output);
 		Session::destroy();
+		if (isset(Output::$output['session']['control_messages_top']))
+			unset(Output::$output['session']['control_messages_top']);
+		echo json_encode(Output::$output);
 		die();
 	}
 }

@@ -19,14 +19,10 @@ class Session {
 
 	public static function destroy() {
 		if (App::get('isAPIRequest')) {
-			$data = [];
-			foreach ($_SESSION as $key => $value) {
-				$data[$key] = $value;
-				unset($_SESSION[$key]);
-			}
-			Output::session($data);
+			Output::session($_SESSION);
+			session_destroy();
 		} else if (Session::$vars)
-			foreach (Session::$vars as $key)
+			foreach (Session::$vars as $key => $value)
 				if (isset($_SESSION[$key]))
 					unset($_SESSION[$key]);
 	}
