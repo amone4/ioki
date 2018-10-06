@@ -12,6 +12,14 @@ class Crypt {
 		return @openssl_decrypt($input, 'bf-cbc', $key);
 	}
 
+	public static function encryptAES($input, $key = PASS) {
+		return @openssl_encrypt($input, 'aes-256-cbc', $key);
+	}
+
+	public static function decryptAES($input, $key = PASS) {
+		return @openssl_decrypt($input, 'aes-256-cbc', $key);
+	}
+
 	public static function encryptAlpha($string, $pad = false) {
 		if ($pad === false || $pad < 1) return self::alphaID($string, false, false, PASS);
 		else {

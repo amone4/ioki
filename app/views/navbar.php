@@ -7,6 +7,7 @@
 		<a href="<?php echo URLROOT; ?>/users/register">Register</a>
 	<?php else : ?>
 		<a href="<?php echo URLROOT; ?>/credentials">Manage Credentials</a> |
+		<a href="<?php echo URLROOT; ?>/locks">Manage Locks</a> |
 		<a href="<?php echo URLROOT; ?>/users/password/change">Change Password</a> |
 		<a href="<?php echo URLROOT; ?>/users/logout">Logout</a>
 	<?php endif ?>
