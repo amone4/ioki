@@ -8,7 +8,8 @@ class Session {
 	public static function create() {
 		Session::$vars = [];
 		if (App::get('isAPIRequest') && isset($_POST['session'])) {
-			foreach ($_POST['session'] as $key => $value) {
+			$session = json_decode($_POST['session']);
+			foreach ($session as $key => $value) {
 				$key = trim(filter_var($key, FILTER_SANITIZE_STRING));
 				array_push(Session::$vars, $key);
 				$_SESSION[$key] = trim(filter_var($value, FILTER_SANITIZE_STRING));

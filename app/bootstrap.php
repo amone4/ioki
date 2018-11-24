@@ -5,6 +5,9 @@ defined('_INDEX_EXEC') or die('Restricted access');
 // starting session
 session_start();
 
+// setting timezone
+date_default_timezone_set('Asia/Kolkata');
+
 // load constants
 require_once 'config/config.php';
 

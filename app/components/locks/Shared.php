@@ -8,7 +8,14 @@ class Shared extends Model {
 		$this->tableName = 'shared_locks';
 	}
 
+	private function deleteExpiredLocks() {
+		$this->database->query('DELETE FROM shared_locks WHERE shared_till < :time');
+		$this->database->bind('time', time(), PDO::PARAM_STR);
+		$this->database->execute();
+	}
+
 	private function getSharedCredentials($user, $field) {
+		$this->deleteExpiredLocks();
 		$this->database->query('SELECT s.*, l.name FROM locks l, shared_locks s WHERE l.id = s.lock_id AND s.' . $field . ' = :user');
 		$this->database->bind('user', $user, PDO::PARAM_INT);
 		return $this->database->resultSet();
